@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useFile } from '../utils/store'
 import DragDrop from './DragDrop'
 import { translate } from '../utils/hooks'
@@ -62,6 +62,7 @@ export default function FileUpload() {
 
       setFileContent(lines.join('\n'))
       setFileStatus('complete')
+      window.electron.ipcRenderer.send('translationcompleted', fileName)
     } else {
       alert('فایلەکە بە سەرکەوتوویی بارنەکراوە')
     }
@@ -85,6 +86,19 @@ export default function FileUpload() {
     URL.revokeObjectURL(link.href)
   }
 
+  // send data to system tray
+  useEffect(() => {
+    window.electron.ipcRenderer.send('lineLengthChanged', lines)
+  }, [lines])
+
+  useEffect(() => {
+    window.electron.ipcRenderer.send('lineTranslatedChanged', lineTranslated)
+  }, [lineTranslated])
+
+  useEffect(() => {
+    window.electron.ipcRenderer.send('fileNameChanged', fileName)
+  }, [fileName])
+
   return (
     <div className="max-w-lg mx-auto p-6 border-4 border-blue-500 rounded-md shadow-lg">
       {/* File Name */}
@@ -96,7 +110,7 @@ export default function FileUpload() {
 
       {/* Status */}
       <p className={fileStatus === 'loading' ? 'text-xl md:text-2xl my-5' : 'hidden'} dir="rtl">
-        {lineTranslated + 1} دێر وەرگێراوە لە کۆی {lines} دێر
+        {lineTranslated} دێر وەرگێراوە لە کۆی {lines} دێر
       </p>
       {fileStatus === 'complete' && (
         <p className="text-green-500 my-5 ">بە سەرکەوتوی وەرگێرانەکە تەواو بوو</p>

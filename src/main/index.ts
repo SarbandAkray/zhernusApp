@@ -1,9 +1,9 @@
-import { app, shell, BrowserWindow, ipcMain, Tray, Event } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, Tray, Event, IpcMainEvent } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import * as trayWindow from 'electron-tray-window'
-
+import { Notification } from 'electron'
 let isQuiting = false
 function createWindow(): void {
   // Create the browser window.
@@ -12,6 +12,7 @@ function createWindow(): void {
     height: 670,
     minHeight: 980,
     minWidth: 670,
+
     show: true,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
@@ -21,6 +22,7 @@ function createWindow(): void {
       // devTools: false
     }
   })
+  mainWindow.maximize()
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
@@ -34,11 +36,11 @@ function createWindow(): void {
   const tray = new Tray(join(__dirname, '../../resources/icon.png'))
   const window = new BrowserWindow({
     frame: false,
-    width: 200, //optional
-    height: 300,
-    resizable: false,
+    width: 700, //optional
+    height: 700,
+    resizable: true,
     webPreferences: {
-      devTools: false,
+      // devTools: false,
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false
     }
@@ -69,16 +71,43 @@ function createWindow(): void {
     }
   })
 
-  ipcMain.on('showMainWindow', () => {
-    mainWindow.show()
-    console.log('showing main window')
-  })
   ipcMain.on('showMainWindow', () => mainWindow.show())
 
   ipcMain.on('exit', () => {
     isQuiting = true
     window.close()
     mainWindow.close()
+  })
+
+  // handle translation changes
+  ipcMain.on('lineLengthChanged', (e: IpcMainEvent, line: int) => {
+    if (line > 0) {
+      window.webContents.send('lineLengthChanged', line)
+    }
+  })
+
+  ipcMain.on('lineTranslatedChanged', (e: IpcMainEvent, line: int) => {
+    if (line > 0) {
+      window.webContents.send('lineTranslatedChanged', line)
+    }
+  })
+
+  ipcMain.on('fileNameChanged', (e: IpcMainEvent, fileName: string) => {
+    window.webContents.send('fileNameChanged', fileName)
+  })
+
+  ipcMain.on('translationcompleted', (e: IpcMainEvent, fileName: string) => {
+    const NOTIFICATION_TITLE = 'بە سەرکەوتووی ژێرنووسەکەت کرا بە کوردی'
+    const NOTIFICATION_BODY = `ژێرنووسی ${fileName} کرا بە کوردی`
+
+    const notifcation = new Notification({
+      title: NOTIFICATION_TITLE,
+      body: NOTIFICATION_BODY
+    })
+    notifcation.show()
+    notifcation.on('click', () => {
+      mainWindow.show()
+    })
   })
 }
 
