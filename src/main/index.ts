@@ -12,7 +12,8 @@ function createWindow(): void {
     height: 670,
     minHeight: 980,
     minWidth: 670,
-
+    icon: join(__dirname, '../../resources/logo.jpg'),
+    title: 'zhernus',
     show: true,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
@@ -33,7 +34,7 @@ function createWindow(): void {
     return { action: 'deny' }
   })
 
-  const tray = new Tray(join(__dirname, '../../resources/icon.png'))
+  const tray = new Tray(join(__dirname, '../../resources/logo.jpg'))
   const window = new BrowserWindow({
     frame: false,
     width: 700, //optional
