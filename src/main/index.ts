@@ -1,11 +1,12 @@
 import { app, shell, BrowserWindow, ipcMain, Tray, Event, IpcMainEvent } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import icon from '../../resources/icon.png?asset'
+
 import * as trayWindow from 'electron-tray-window'
 import { Notification } from 'electron'
 let isQuiting = false
 function createWindow(): void {
+  const icon = join(__dirname, '../../resources/logo.jpg')
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 900,
@@ -81,23 +82,23 @@ function createWindow(): void {
   })
 
   // handle translation changes
-  ipcMain.on('lineLengthChanged', (e: IpcMainEvent, line: int) => {
-    if (line > 0) {
+  ipcMain.on('lineLengthChanged', (_e: IpcMainEvent, line: string) => {
+    if (parseInt(line) > 0) {
       window.webContents.send('lineLengthChanged', line)
     }
   })
 
-  ipcMain.on('lineTranslatedChanged', (e: IpcMainEvent, line: int) => {
-    if (line > 0) {
+  ipcMain.on('lineTranslatedChanged', (_e: IpcMainEvent, line: string) => {
+    if (parseInt(line) > 0) {
       window.webContents.send('lineTranslatedChanged', line)
     }
   })
 
-  ipcMain.on('fileNameChanged', (e: IpcMainEvent, fileName: string) => {
+  ipcMain.on('fileNameChanged', (_e: IpcMainEvent, fileName: string) => {
     window.webContents.send('fileNameChanged', fileName)
   })
 
-  ipcMain.on('translationcompleted', (e: IpcMainEvent, fileName: string) => {
+  ipcMain.on('translationcompleted', (_e: IpcMainEvent, fileName: string) => {
     const NOTIFICATION_TITLE = 'بە سەرکەوتووی ژێرنووسەکەت کرا بە کوردی'
     const NOTIFICATION_BODY = `ژێرنووسی ${fileName} کرا بە کوردی`
 

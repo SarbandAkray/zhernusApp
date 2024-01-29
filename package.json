@@ -1,10 +1,11 @@
 {
-  "name": "zhernusapp",
-  "version": "1.0.0",
-  "description": "An Electron application with React and TypeScript",
+  "name": "Zhernus",
+  "version": "v 0.0.1",
+  "description": "zhernus is an app to translate english subtitle to kurdish subtitle",
   "main": "./out/main/index.js",
-  "author": "example.com",
-  "homepage": "https://electron-vite.org",
+  "author": "https://sarband.online",
+  "homepage": "https://zhernus.sarband.online",
+  "icon": "./resources/logo.jpg",
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
