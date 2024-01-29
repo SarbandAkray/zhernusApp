@@ -4,6 +4,7 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 
 import * as trayWindow from 'electron-tray-window'
 import { Notification } from 'electron'
+
 let isQuiting = false
 function createWindow(): void {
   const icon = join(__dirname, '../../resources/logo.jpg')

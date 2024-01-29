@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 export function App() {
   const showMainWindow = (): void => window.electron.ipcRenderer.send('showMainWindow')
@@ -7,15 +7,15 @@ export function App() {
   const [linesTranslated, setLinesTranslated] = useState(0)
   const [fileName, setFileName] = useState('')
   useEffect(() => {
-    window.electron.ipcRenderer.on('lineLengthChanged', (e, line) => {
+    window.electron.ipcRenderer.on('lineLengthChanged', (_e, line) => {
       setLines(line)
     })
 
-    window.electron.ipcRenderer.on('lineTranslatedChanged', (e, line) => {
+    window.electron.ipcRenderer.on('lineTranslatedChanged', (_e, line) => {
       setLinesTranslated(line)
     })
 
-    window.electron.ipcRenderer.on('fileNameChanged', (e, fileName) => {
+    window.electron.ipcRenderer.on('fileNameChanged', (_e, fileName) => {
       setFileName(fileName)
     })
   }, [])
